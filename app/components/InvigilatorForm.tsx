@@ -14,7 +14,9 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "@/hooks/use-toast"
+import { useState, useEffect } from "react"
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -30,11 +32,24 @@ const formSchema = z.object({
     message: "Address must be at least 5 characters.",
   }),
   examCenterID: z.string().min(24, {
-    message: "Exam Center ID must be at least 24 characters.",
+    message: "Please select an exam center.",
   }),
 })
 
+// Mock exam centers data (replace with actual API call in production)
+const mockExamCenters = [
+  { id: "60d5ecb74f421abcdef12345", name: "Andrew School" },
+  { id: "60d5ecb74f421abcdef67890", name: "St. Mary's College" },
+]
+
 export default function InvigilatorForm() {
+  const [examCenters, setExamCenters] = useState(mockExamCenters)
+
+  useEffect(() => {
+    // In a real application, you would fetch exam centers from an API here
+    // setExamCenters(fetchedExamCenters)
+  }, [])
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -114,12 +129,23 @@ export default function InvigilatorForm() {
             name="examCenterID"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Exam Center ID</FormLabel>
-                <FormControl>
-                  <Input placeholder="66fd5e6570b86361a66fb389" {...field} className="w-full" />
-                </FormControl>
+                <FormLabel>Exam Center</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select an exam center" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {examCenters.map((center) => (
+                      <SelectItem key={center.id} value={center.id}>
+                        {center.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormDescription>
-                  Enter the associated exam center ID.
+                  Select the associated exam center.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

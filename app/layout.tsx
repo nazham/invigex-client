@@ -1,6 +1,6 @@
 
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+
 import "./globals.css";
 import ReactQueryProvider from "./utils/providers/ReactQueryProvider";
 
@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-      <ReactQueryProvider>
+        <ReactQueryProvider>
           <main>{children}</main>
         </ReactQueryProvider>
       </body>
