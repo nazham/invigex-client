@@ -1,4 +1,4 @@
-import InvigilatorForm from "../components/InvigilatorForm";
+import InvigilatorForm from "../../components/InvigilatorForm";
 
 // app/invigilators/page.tsx
 export default function InvigilatorsPage() {
