@@ -5,6 +5,7 @@ import "./globals.css";
 import ReactQueryProvider from "./utils/providers/ReactQueryProvider";
 import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/components/Navbar";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Navbar />
           <main>{children}</main>
+          <Toaster />
         </ThemeProvider>
         </ReactQueryProvider>
       </body>
