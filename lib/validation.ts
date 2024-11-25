@@ -22,3 +22,16 @@ export const invigilatorSchema = z.object({
 });
 
 export type CreateInvigilator = z.infer<typeof invigilatorSchema>;
+
+export const centreSchema = z.object({
+  schoolName: requiredString.max(100),
+  examName: z.string().min(2, {
+    message: "Exam name must be at least 2 characters.",
+  }),
+  totalRooms: z.coerce.number().int().positive(),
+  totalHalls: z.coerce.number().int().min(-1),
+  roomCapacity: z.coerce.number().int().min(20),
+  hallCapacity: z.coerce.number().int().min(50),
+})
+
+export type CreateCenter = z.infer<typeof centreSchema>;
