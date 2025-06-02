@@ -33,7 +33,7 @@ export default function ExamCenterDashboard() {
     queryFn: fetchExamCenters
   })
 
-  const { data: invigilators = {} } = useQuery({
+  const { data: invigilators = {} as any } = useQuery({
     queryKey: ['invigilators', expandedCenter],
     queryFn: () => fetchInvigilators(expandedCenter!),
     enabled: !!expandedCenter
@@ -130,9 +130,8 @@ export default function ExamCenterDashboard() {
                     </div>
                     <InvigilatorList
                       invigilators={invigilators[center.id] || []}
-                      examCenter={center}
-                      onEdit={() => {}}
                       onDelete={async () => {}}
+                      onUpdate={async () => {}}
                     />
                   </div>
                 </CollapsibleContent>
@@ -161,8 +160,7 @@ export default function ExamCenterDashboard() {
           </DialogHeader>
           {showInvigilatorForm && (
             <InvigilatorForm
-              examCenterId={showInvigilatorForm}
-              onSuccess={() => setShowInvigilatorForm(null)}
+              onSubmit={() => {}}
             />
           )}
         </DialogContent>
