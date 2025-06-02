@@ -16,8 +16,7 @@ import { CreateInvigilator } from '@/lib/validation'
 export default function InvigilatorManagement() {
     const [showForm, setShowForm] = useState(false);
     const queryClient = useQueryClient();
-    // const [invigilators, setInvigilators] = useState<InvigilatorResponse[]>([]);
-
+    
     const { toast } = useToast()
 
     const { isPending, error, data: invigilators = [] } = useQuery({
