@@ -11,18 +11,19 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { InvigilatorResponse } from '@/models/responses'
 import { ToastAction } from '@radix-ui/react-toast'
 import { CreateInvigilator } from '@/lib/validation'
+import { Table, TableHeader, TableBody, TableCell, TableHead, TableRow } from '@/components/ui/table'
 
 
 export default function InvigilatorManagement() {
     const [showForm, setShowForm] = useState(false);
     const queryClient = useQueryClient();
-    
+
     const { toast } = useToast()
 
     const { isPending, error, data: invigilators = [] } = useQuery({
         queryKey: ['invigilators'],
         queryFn: async () => {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/invigilator/`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/invigilator/`);
             return (await response.json()) as InvigilatorResponse[];
         },
     })
@@ -41,7 +42,7 @@ export default function InvigilatorManagement() {
 
     const addInvigilatorMutation = useMutation({
         mutationFn: async (values: CreateInvigilator) => {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/invigilator/`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/invigilator/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -60,7 +61,7 @@ export default function InvigilatorManagement() {
 
         },
         onSuccess: (newInvigilator: InvigilatorResponse) => {
-            queryClient.setQueryData(['invigilators'], (old: any) => [...old, newInvigilator])
+            queryClient.setQueryData(['invigilators'], (old: InvigilatorResponse[]) => [...old, newInvigilator])
             setShowForm(false)
             toast({
                 title: "Success",
@@ -83,7 +84,7 @@ export default function InvigilatorManagement() {
 
     const updateInvigilatorMutation = useMutation({
         mutationFn: async ({ id, values }: { id: string; values: CreateInvigilator }) => {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/invigilator/${id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/invigilator/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -101,7 +102,7 @@ export default function InvigilatorManagement() {
             return data;
         },
         onSuccess: (updatedInvigilator: InvigilatorResponse) => {
-            queryClient.setQueryData(['invigilators'], (old: any) =>
+            queryClient.setQueryData(['invigilators'], (old: InvigilatorResponse[]) =>
                 old.map((inv: InvigilatorResponse) =>
                     inv._id === updatedInvigilator._id ? updatedInvigilator : inv
                 )
@@ -126,7 +127,7 @@ export default function InvigilatorManagement() {
 
     const deleteInvigilatorMutation = useMutation({
         mutationFn: async (id: string) => {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/invigilator/${id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/invigilator/${id}`, {
                 method: 'DELETE',
             });
             if (!response.ok) {
@@ -137,7 +138,7 @@ export default function InvigilatorManagement() {
         onSuccess: (deletedId) => {
             let deletedInvigilatorName;
 
-            queryClient.setQueryData(['invigilators'], (old: any) => {
+            queryClient.setQueryData(['invigilators'], (old: InvigilatorResponse[]) => {
                 const invigilatorToDelete = old.find((inv: InvigilatorResponse) => inv._id === deletedId);
 
                 if (invigilatorToDelete) {
@@ -168,8 +169,66 @@ export default function InvigilatorManagement() {
 
     if (isPending) {
         return (
-            <div className="flex items-center justify-center min-h-[200px]">
-                <div className="animate-pulse text-muted-foreground">Loading...</div>
+            <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-semibold">Invigilators List</h2>
+                    <Button onClick={() => setShowForm(!showForm)}>
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        {showForm ? 'Cancel' : 'Add Invigilator'}
+                    </Button>
+                </div>
+
+                {showForm && (
+                    <div className="border rounded-lg p-4 bg-card">
+                        <InvigilatorForm
+                            onSubmit={(data) => addInvigilatorMutation.mutate(data)}
+                        />
+                    </div>
+                )}
+
+                <div className="rounded-md border">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Name</TableHead>
+                                <TableHead className="hidden md:table-cell">Email</TableHead>
+                                <TableHead className="hidden md:table-cell">Phone</TableHead>
+                                <TableHead className="hidden lg:table-cell">Address</TableHead>
+                                <TableHead className="w-[50px]">Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {[...Array(5)].map((_, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>
+                                        <div className="space-y-2">
+                                            <div className="h-4 bg-muted rounded w-1/3 animate-pulse"></div>
+                                            <div className="md:hidden space-y-1">
+                                                <div className="h-3 bg-muted rounded w-1/2 animate-pulse"></div>
+                                                <div className="h-3 bg-muted rounded w-2/3 animate-pulse"></div>
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                        <div className="h-4 bg-muted rounded w-2/3 animate-pulse"></div>
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                        <div className="h-4 bg-muted rounded w-1/2 animate-pulse"></div>
+                                    </TableCell>
+                                    <TableCell className="hidden lg:table-cell">
+                                        <div className="h-4 bg-muted rounded w-3/4 animate-pulse"></div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex space-x-2">
+                                            <div className="h-8 w-8 bg-muted rounded animate-pulse"></div>
+                                            <div className="h-8 w-8 bg-muted rounded animate-pulse"></div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
             </div>
         )
     }

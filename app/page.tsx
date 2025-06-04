@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { School, Users } from 'lucide-react'
+import { School, Users, BarChart } from 'lucide-react'
 import { Button } from "@/components/ui/button";
 
 
@@ -16,7 +16,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div className="group relative">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-primary/50 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000"></div>
             <Link href="/exam-centers" className="relative block">
@@ -44,6 +44,22 @@ export default function Home() {
                 </p>
                 <Button variant="link" className="mt-4 p-0">
                   Manage Invigilators →
+                </Button>
+              </div>
+            </Link>
+          </div>
+
+          <div className="group relative">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-primary/50 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000"></div>
+            <Link href="/centre-stat" className="relative block">
+              <div className="h-full bg-card rounded-lg border p-8 hover:border-primary transition-colors">
+                <BarChart className="w-12 h-12 mb-4 text-primary" />
+                <h2 className="text-2xl font-semibold mb-2">Center Statistics</h2>
+                <p className="text-muted-foreground">
+                  View detailed analytics and performance metrics for your exam centers
+                </p>
+                <Button variant="link" className="mt-4 p-0">
+                  View Statistics →
                 </Button>
               </div>
             </Link>
